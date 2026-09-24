@@ -1,0 +1,17 @@
+{
+	"schemaVersion": 1,
+	"id": "easycrosshair-selftest",
+	"version": "1.0.0",
+	"name": "Easy Crosshair self test",
+	"description": "Development-only in-world checks for Easy Crosshair. Not shipped.",
+	"license": "MIT",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"dev.easycrosshair.selftest.fabric.EasyCrosshairSelfTestFabric"
+		]
+	},
+	"depends": {
+		"easycrosshair": "*"
+	}
+}

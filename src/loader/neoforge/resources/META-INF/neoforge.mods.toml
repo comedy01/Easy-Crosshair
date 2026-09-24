@@ -1,0 +1,30 @@
+modLoader="javafml"
+loaderVersion="[1,)"
+license="MIT"
+issueTrackerURL="https://github.com/comedy01/EasyCrosshair/issues"
+
+[[mods]]
+modId="easycrosshair"
+version="${version}"
+displayName="Easy Crosshair"
+displayURL="https://github.com/comedy01/EasyCrosshair"
+iconFile="assets/easycrosshair/icon128.png"
+authors="comedy01"
+description='''Design your own crosshair: pick a shape, color, size, gap and outline, change color when aiming at mobs, and see your attack cooldown at a glance. Client-side only.'''
+
+[[mixins]]
+config="easycrosshair.mixins.json"
+
+[[dependencies.easycrosshair]]
+modId="neoforge"
+type="required"
+versionRange="${neoforge_range}"
+ordering="NONE"
+side="CLIENT"
+
+[[dependencies.easycrosshair]]
+modId="minecraft"
+type="required"
+versionRange="${mc_range}"
+ordering="NONE"
+side="CLIENT"

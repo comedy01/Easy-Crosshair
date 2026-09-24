@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "easycrosshair",
+	"version": "${version}",
+	"name": "Easy Crosshair",
+	"description": "Design your own crosshair: pick a shape, color, size, gap and outline, change color when aiming at mobs, and see your attack cooldown at a glance. Client-side only.",
+	"icon": {
+		"16": "assets/easycrosshair/icon16.png",
+		"32": "assets/easycrosshair/icon32.png",
+		"128": "assets/easycrosshair/icon128.png"
+	},
+	"authors": [
+		"comedy01"
+	],
+	"license": "MIT",
+	"contact": {
+		"homepage": "https://github.com/comedy01/EasyCrosshair",
+		"sources": "https://github.com/comedy01/EasyCrosshair",
+		"issues": "https://github.com/comedy01/EasyCrosshair/issues"
+	},
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"dev.easycrosshair.fabric.EasyCrosshairFabric"
+		],
+		"modmenu": [
+			"dev.easycrosshair.fabric.EasyCrosshairModMenu"
+		]
+	},
+	"mixins": [
+		"easycrosshair.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "${range}",
+		"java": ">=${java_version}"
+	},
+	"suggests": {
+		"modmenu": "*"
+	}
+}

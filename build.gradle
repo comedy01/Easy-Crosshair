@@ -21,7 +21,7 @@ def packs = versionProps.getProperty("packs").split(",")
 def label = versionProps.getProperty("label")
 def javaVersion = versionProps.getProperty("java").toInteger()
 def selftestArgs = ["--width", "1920", "--height", "1080"]
-def selftestJvm = project.properties.findAll { it.key.startsWith("ec.") }.collect { "-Deasycrosshair.${it.key.substring(3)}=${it.value}" }
+def selftestJvm = ["-Xmx2G"] + project.properties.findAll { it.key.startsWith("ec.") }.collect { "-Deasycrosshair.${it.key.substring(3)}=${it.value}" }
 
 def expansions = [java_version: javaVersion]
 versionProps.stringPropertyNames().each { expansions[it] = versionProps.getProperty(it) }

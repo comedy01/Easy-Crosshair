@@ -1,13 +1,13 @@
 modLoader="javafml"
 loaderVersion="[47,)"
 license="MIT"
-issueTrackerURL="https://github.com/comedy01/EasyCrosshair/issues"
+issueTrackerURL="https://github.com/comedy01/Easy-Crosshair/issues"
 
 [[mods]]
 modId="easycrosshair"
 version="${version}"
 displayName="Easy Crosshair"
-displayURL="https://github.com/comedy01/EasyCrosshair"
+displayURL="https://github.com/comedy01/Easy-Crosshair"
 logoFile="assets/easycrosshair/icon128.png"
 authors="comedy01"
 description='''Design your own crosshair: pick a shape, color, size, gap and outline, change color when aiming at mobs, and see your attack cooldown at a glance. Client-side only.'''

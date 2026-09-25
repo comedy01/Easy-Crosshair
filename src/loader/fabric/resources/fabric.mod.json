@@ -14,9 +14,9 @@
 	],
 	"license": "MIT",
 	"contact": {
-		"homepage": "https://github.com/comedy01/EasyCrosshair",
-		"sources": "https://github.com/comedy01/EasyCrosshair",
-		"issues": "https://github.com/comedy01/EasyCrosshair/issues"
+		"homepage": "https://github.com/comedy01/Easy-Crosshair",
+		"sources": "https://github.com/comedy01/Easy-Crosshair",
+		"issues": "https://github.com/comedy01/Easy-Crosshair/issues"
 	},
 	"environment": "client",
 	"entrypoints": {

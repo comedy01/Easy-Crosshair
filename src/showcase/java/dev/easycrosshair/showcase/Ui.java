@@ -22,7 +22,6 @@ final class Ui {
         screen.keyPressed(new KeyEvent(key, 0, modifiers));
     }
 
-    // Moves the game's idea of the mouse, in window pixels, so hovering and tooltips follow the drawn cursor.
     static void moveMouse(Minecraft mc, double x, double y) {
         MouseHandlerAccessor mouse = (MouseHandlerAccessor) mc.mouseHandler;
         mouse.ecShowcase$setX(x);

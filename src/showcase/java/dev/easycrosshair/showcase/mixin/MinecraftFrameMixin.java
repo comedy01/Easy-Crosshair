@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Minecraft.class)
 abstract class MinecraftFrameMixin {
-    // Runs before each frame: the previous frame is finished and still in the main render target.
     @Inject(method = "runTick", at = @At("HEAD"))
     private void ecShowcase$frame(boolean advanceGameTime, CallbackInfo ci) {
         Showcase.frame();

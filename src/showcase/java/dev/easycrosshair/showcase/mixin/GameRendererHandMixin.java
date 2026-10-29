@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
 abstract class GameRendererHandMixin {
-    // Keeps the bare arm out of shots that are about the crosshair alone.
     @Inject(method = "renderItemInHand", at = @At("HEAD"), cancellable = true)
     private void ecShowcase$hideHand(CallbackInfo ci) {
         if (Showcase.hideHand()) {

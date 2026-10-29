@@ -43,14 +43,11 @@ import java.util.function.BooleanSupplier;
 import java.util.function.IntConsumer;
 import java.util.function.Supplier;
 
-// Films Easy Crosshair for its gallery: a scripted visit to a quiet spot in the plains that records each feature as
-// a 1080p60 clip and saves stills. Started with -Pec.showcase=<output dir> -Pec.ffmpeg=<ffmpeg path>.
 public final class Showcase {
     private static final String WORLD = "easycrosshair-showcase";
     private static final long SETTLE_NANOS = 3_000_000_000L;
     private static final int GLIDE = 24;
     private static final int TEAL = 0xFF33E0D0;
-    // Colors for the color scene, each one a setting the red, green, blue and opacity sliders can reach.
     private static final int[] PALETTE = {
             0xFFFF4B4B, 0xFFFFA020, 0xFFFFE030, 0xFF5BE35B, TEAL, 0xFF4F8CFF, 0xFFB45CFF, 0xFFFF5CC8};
     private static final String[] ARROW = {
@@ -93,15 +90,12 @@ public final class Showcase {
     private double cursorY;
 
     private interface Action {
-        // Called once per frame with the frames spent on this action so far; returns true when done.
         boolean run(int frame);
     }
 
-    // A spot for the crosshair to rest on, reached after gliding for move frames and then held.
     private record Key(int move, int hold, Vec3 target) {
     }
 
-    // Where the cursor arrives at a frame. The spot is looked up each frame, since widgets move with the screen.
     private record Stop(int frame, Supplier<double[]> where) {
     }
 
@@ -131,7 +125,6 @@ public final class Showcase {
         }
     }
 
-    // Draws an arrow cursor at the scripted mouse position, two window pixels to each cursor pixel.
     public static void drawCursor(GuiGraphicsExtractor graphics) {
         if (instance == null || !instance.started || !instance.cursorShown) {
             return;
@@ -231,8 +224,6 @@ public final class Showcase {
         mc.options.setCameraType(CameraType.FIRST_PERSON);
     }
 
-    // ---- building blocks ----------------------------------------------------------------------------------------
-
     private void once(Runnable action) {
         actions.add(f -> {
             action.run();
@@ -244,7 +235,6 @@ public final class Showcase {
         actions.add(f -> ready.getAsBoolean());
     }
 
-    // Runs hold every frame for this many frames.
     private void holdFor(int frames, Runnable hold) {
         actions.add(f -> {
             hold.run();
@@ -252,7 +242,6 @@ public final class Showcase {
         });
     }
 
-    // Waits until the chunks around the camera are loaded and drawn, running hold every frame meanwhile.
     private void settle(Minecraft mc, Runnable hold) {
         actions.add(f -> {
             hold.run();
@@ -261,7 +250,6 @@ public final class Showcase {
         });
     }
 
-    // Records a clip. The script runs before each frame is drawn; call shot() inside it to keep that frame as a still.
     private void record(String name, int frames, IntConsumer script) {
         actions.add(f -> {
             if (f == 0) {
@@ -319,7 +307,6 @@ public final class Showcase {
         run(mc, String.format(Locale.ROOT, format, args));
     }
 
-    // Turns the player to this yaw and pitch at once, with no smoothing between frames.
     private static void face(Minecraft mc, double yaw, double pitch) {
         LocalPlayer player = mc.player;
         player.setYRot((float) yaw);
@@ -330,7 +317,6 @@ public final class Showcase {
         player.yHeadRotO = (float) yaw;
     }
 
-    // Points the crosshair at a spot in the world.
     private static void lookAt(Minecraft mc, Vec3 target) {
         Vec3 eye = mc.player.getEyePosition();
         double dx = target.x - eye.x;
@@ -339,7 +325,6 @@ public final class Showcase {
         face(mc, Math.toDegrees(Math.atan2(-dx, dz)), -Math.toDegrees(Math.atan2(dy, Math.sqrt(dx * dx + dz * dz))));
     }
 
-    // Glides the crosshair through the keys: the first is held, each later one is reached over its move frames.
     private static void follow(Minecraft mc, int f, Key... keys) {
         Vec3 target = keys[0].target();
         int t = f - keys[0].hold();
@@ -356,7 +341,6 @@ public final class Showcase {
         lookAt(mc, target);
     }
 
-    // Moves the cursor through the stops, gliding into each one in the frames before it arrives.
     private void cursor(int f, Stop... stops) {
         double[] at = stops[0].where().get();
         for (int i = 1; i < stops.length; i++) {
@@ -386,9 +370,6 @@ public final class Showcase {
         return only == null || List.of(only.split(",")).contains(scene);
     }
 
-    // ---- the set: a flat stretch of plains with three mobs and a big oak straight ahead -----------------------
-
-    // The centre of block (dx, dy, dz) on the set, where dy 0 is the layer the player stands in.
     private Vec3 at(double dx, double dy, double dz) {
         BlockPos c = site.get();
         return new Vec3(c.getX() + dx + 0.5, c.getY() + dy, c.getZ() + dz + 0.5);
@@ -398,8 +379,6 @@ public final class Showcase {
         return level.getChunk(x >> 4, z >> 4).getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x & 15, z & 15);
     }
 
-    // Finds plains, then of the spots around it picks the flattest dry one, so levelling the set leaves no cliffs.
-    // Heights come straight from the terrain noise, which is quick and generates no chunks.
     private void locate(Minecraft mc) {
         once(() -> {
             IntegratedServer server = mc.getSingleplayerServer();
@@ -420,7 +399,6 @@ public final class Showcase {
                         if (!level.getBiome(new BlockPos(cx, centre, cz)).is(Biomes.PLAINS)) {
                             continue;
                         }
-                        // How many samples stand more than a block off the usual ground height, with water worse.
                         List<Integer> heights = new ArrayList<>();
                         int wet = 0;
                         for (int dx = -40; dx <= 40; dx += 8) {
@@ -467,7 +445,6 @@ public final class Showcase {
         return best;
     }
 
-    // Once the chunks exist, stands the set on the most common ground height around it, so its edges meet the land.
     private void level(Minecraft mc) {
         IntegratedServer server = mc.getSingleplayerServer();
         int ground = server.submit(() -> {
@@ -486,7 +463,6 @@ public final class Showcase {
         log("set stands at y " + (ground + 1));
     }
 
-    // Fills a box in slices small enough for the fill command.
     private static void fill(Minecraft mc, int x1, int y1, int z1, int x2, int y2, int z2, String block) {
         int layers = Math.max(1, 32768 / ((Math.abs(x2 - x1) + 1) * (Math.abs(z2 - z1) + 1)));
         for (int y = Math.min(y1, y2); y <= Math.max(y1, y2); y += layers) {
@@ -507,7 +483,6 @@ public final class Showcase {
         fill(mc, x - 24, ground + 1, z - 24, x + 24, ground + 40, z + 24, "minecraft:air");
         fill(mc, x - 24, ground - 6, z - 24, x + 24, ground - 1, z + 24, "minecraft:dirt");
         fill(mc, x - 24, ground, z - 24, x + 24, ground, z + 24, "minecraft:grass_block");
-        // A big oak straight ahead gives the crosshair something to sit on in the close-ups.
         cmd(mc, "place feature minecraft:fancy_oak %d %d %d", x, ground + 1, z + 14);
         String[] kinds = {"oak", "birch", "fancy_oak"};
         int[][] trees = {{-9, 12}, {8, 17}, {-16, 19}, {15, 10}, {-21, 5}, {21, -6}, {-15, -15}, {12, -19}, {3, -22},
@@ -533,7 +508,6 @@ public final class Showcase {
             }
         }
         run(mc, "kill @e[type=!minecraft:player]");
-        // A hostile and two passive mobs in a row, facing the camera.
         summon(mc, "creeper", at(2, 0, 3), 180.0F);
         summon(mc, "sheep", at(0, 0, 3), 180.0F);
         summon(mc, "cow", at(-2, 0, 3), 180.0F);
@@ -545,7 +519,6 @@ public final class Showcase {
         run(mc, "item replace entity @p hotbar.4 with minecraft:bread 16");
     }
 
-    // Moves to the start of a scene with defaults, then waits for the world to draw, holding where the clip starts.
     private void scene(Minecraft mc, CrosshairConfig config, Vec3 feet, Runnable setup, Runnable hold) {
         once(() -> {
             release(mc);
@@ -577,7 +550,6 @@ public final class Showcase {
             run(mc, "gamerule spawn_mobs false");
         });
         locate(mc);
-        // Commands only change loaded chunks, so go there and keep the whole set loaded before building it.
         once(() -> {
             BlockPos c = site.get();
             cmd(mc, "forceload add %d %d %d %d", c.getX() - 30, c.getZ() - 30, c.getX() + 30, c.getZ() + 30);
@@ -595,13 +567,11 @@ public final class Showcase {
             mc.player.getAbilities().flying = false;
             mc.player.onUpdateAbilities();
         });
-        // The scenes are placed relative to the site, so they can only be planned once it has been found.
         once(() -> film(mc, config));
     }
 
     private void film(Minecraft mc, CrosshairConfig config) {
         Vec3 spot = at(0, 0, 0);
-        // Straight ahead at eye height, over the sheep's back and onto the oak's trunk, out of reach.
         Vec3 trunk = at(0, 1.62, 14);
 
         if (wanted("intro")) {
@@ -620,7 +590,6 @@ public final class Showcase {
         }
 
         if (wanted("shapes")) {
-            // Each of the eight shapes in turn, as the Shape button steps through them.
             scene(mc, config, spot, () -> {
             }, () -> lookAt(mc, trunk));
             record("02-shapes", 300, f -> {
@@ -655,7 +624,6 @@ public final class Showcase {
         }
 
         if (wanted("size")) {
-            // Whole slider steps, each held a moment: longer, wider, thicker, then a heavier outline.
             scene(mc, config, spot, () -> {
                 config.setShape(CrosshairPolicy.SHAPE_CROSS);
                 config.setColor(TEAL);
@@ -702,7 +670,6 @@ public final class Showcase {
         }
 
         if (wanted("attack")) {
-            // Swing at the air: the bar charges back up, then the same with Fade.
             scene(mc, config, spot, () -> {
                 config.setShape(CrosshairPolicy.SHAPE_CROSS_DOT);
                 select(mc, 0);
@@ -724,7 +691,6 @@ public final class Showcase {
         }
 
         if (wanted("spread")) {
-            // Walk, sprint and jump towards the oak, then stop and draw the bow.
             Vec3 start = at(1, 0, -14);
             Vec3 ahead = at(1, 1.62, 14);
             scene(mc, config, start, () -> {
@@ -755,7 +721,6 @@ public final class Showcase {
                 }
             });
             once(() -> {
-                // Put the bow away before letting go, so no arrow is fired.
                 select(mc, 8);
                 release(mc);
             });
@@ -811,9 +776,6 @@ public final class Showcase {
         }
     }
 
-    // ---- finding things on screen, in GUI coordinates ------------------------------------------------------------
-
-    // The lower right corner, where the settings screen has no buttons.
     private static double[] corner(Minecraft mc) {
         Screen screen = Screens.current(mc);
         return new double[] {screen.width - 36, screen.height - 30};
@@ -827,13 +789,11 @@ public final class Showcase {
         return new double[] {widget.getX() + widget.getWidth() * along, widget.getY() + widget.getHeight() / 2.0};
     }
 
-    // Clicks the widget whose label starts with this text, at this fraction of its width.
     private static void clickLabel(Minecraft mc, String label, double along) {
         double[] at = labelAt(mc, label, along);
         Ui.click(Screens.current(mc), at[0], at[1]);
     }
 
-    // The spot on a slider that sets it to this fraction of its range; the handle is 8 wide, so the ends are inset.
     private static double[] sliderAt(Minecraft mc, String label, double value) {
         AbstractWidget widget = find(Screens.current(mc), label);
         if (widget == null) {

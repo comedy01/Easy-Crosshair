@@ -230,7 +230,6 @@ jar {
 	}
 }
 
-// Films the gallery video: ./gradlew runShowcase -Pminecraft_version=26.3 -Pec.showcase=<dir> -Pec.ffmpeg=<exe>
 if (fabric && !remap && project.findProperty("ec.showcase") != null) {
 	sourceSets {
 		showcase

@@ -15,8 +15,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-// Streams finished frames into ffmpeg as raw RGBA. The GPU copy is asynchronous, so frames arrive a little later;
-// the queue is bounded so a slow encoder holds the game back instead of dropping frames.
 final class Recorder {
     static final int FPS = 60;
     private static final byte[] END = new byte[0];
@@ -77,7 +75,6 @@ final class Recorder {
         writer.start();
     }
 
-    // Queues a copy of the frame the game has just finished drawing. A still is also saved as a PNG when given.
     void capture(Path still) {
         check();
         requested++;
@@ -97,7 +94,6 @@ final class Recorder {
         });
     }
 
-    // Grabs one frame as a PNG without recording it.
     static void still(Path file) {
         Screenshot.takeScreenshot(Screens.renderTarget(Minecraft.getInstance()), image -> {
             try (image) {
@@ -113,7 +109,6 @@ final class Recorder {
         image.writeToFile(file);
     }
 
-    // True once every frame asked for has reached the queue, so the file can be closed.
     boolean drained() {
         return received >= requested;
     }

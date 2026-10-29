@@ -1,0 +1,16 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "dev.easycrosshair.showcase.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"client": [
+		"CrosshairClockMixin",
+		"GameRendererHandMixin",
+		"MinecraftFrameMixin",
+		"MouseHandlerAccessor",
+		"ScreenCursorMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

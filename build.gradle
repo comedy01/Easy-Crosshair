@@ -229,3 +229,28 @@ jar {
 		rename { "${it}_${project.base.archivesName.get()}" }
 	}
 }
+
+// Films the gallery video: ./gradlew runShowcase -Pminecraft_version=26.3 -Pec.showcase=<dir> -Pec.ffmpeg=<exe>
+if (fabric && !remap && project.findProperty("ec.showcase") != null) {
+	sourceSets {
+		showcase
+	}
+	sourceSets.showcase.compileClasspath += sourceSets.main.compileClasspath + sourceSets.main.output
+	sourceSets.showcase.runtimeClasspath += sourceSets.main.runtimeClasspath + sourceSets.main.output
+
+	loom {
+		mods {
+			easycrosshair_showcase {
+				sourceSet sourceSets.showcase
+			}
+		}
+		runs {
+			showcase {
+				client()
+				source sourceSets.showcase
+				programArgs "--width", "1920", "--height", "1080", "--username", "EasyCrosshair"
+				vmArgs(["-Xmx2G"] + project.properties.findAll { it.key.startsWith("ec.") }.collect { "-Deasycrosshair.${it.key.substring(3)}=${it.value}" })
+			}
+		}
+	}
+}

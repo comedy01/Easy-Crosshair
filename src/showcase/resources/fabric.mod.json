@@ -1,0 +1,20 @@
+{
+	"schemaVersion": 1,
+	"id": "easycrosshair-showcase",
+	"version": "1.0.0",
+	"name": "Easy Crosshair showcase",
+	"description": "Development-only film director for Easy Crosshair's gallery video. Not shipped.",
+	"license": "MIT",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"dev.easycrosshair.showcase.EasyCrosshairShowcaseFabric"
+		]
+	},
+	"depends": {
+		"easycrosshair": "*"
+	},
+	"mixins": [
+		"easycrosshair_showcase.mixins.json"
+	]
+}
